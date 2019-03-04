@@ -1,0 +1,393 @@
+#include <iostream>
+#include<typeinfo>
+#include<cstring>
+using namespace std;
+
+class Gestiune;
+class Locuinta
+{
+    string Proprietar;
+    int Suprafata;
+    int Discount;
+    char tip[100];
+
+public:
+    Locuinta()
+    {
+        Proprietar="Anonim";
+        Suprafata=0;
+        Discount=0;
+    }
+    char* getTip()
+    {
+        return tip;
+    }
+    void setTip(char *s)
+    {
+        strcpy(tip,s);
+    }
+    Locuinta(string p,int s=0, int d=0)
+    {
+        Proprietar=p;
+        Suprafata=s;
+        Discount=d;
+    }
+    string getProprietar()
+    {
+        return Proprietar;
+    }
+    int getSuprafata()
+    {
+        return Suprafata;
+    }
+    int getDiscount()
+    {
+        return Discount;
+    }
+    void setProprietar(string s)
+    {
+        Proprietar=s;
+    }
+    void setSuprafata(int s)
+    {
+        Suprafata=s;
+    }
+    void setDiscount(int d)
+    {
+        Discount=d;
+    }
+    void operator =(Locuinta& X)
+    {
+        Proprietar=X.getProprietar();
+        Discount=X.getDiscount();
+        Suprafata=X.getSuprafata();
+    }
+};
+
+class Apartament: public Locuinta
+{
+    int Etaj;
+    int Pret;
+
+public:
+    Apartament() {}
+    Apartament(int e)
+    {
+        Etaj=e;
+    }
+    Apartament(int e,int p)
+    {
+        Etaj=e;
+        Pret=p;
+    }
+    Apartament(Apartament& a)
+    {
+        Etaj=a.getEtaj();
+        setSuprafata(a.getSuprafata());
+        Pret=a.getPret();
+        setProprietar(a.getProprietar());
+    }
+    Apartament(string p,int s=0,int d=0,int e=0,int pret=0): Locuinta(p,s,d)
+    {
+        Etaj=e;
+        Pret=pret;
+    }
+    int getEtaj()
+    {
+        return Etaj;
+    }
+    void setEtaj(int r)
+    {
+        Etaj=r;
+    }
+    int getPret()
+    {
+        return Pret;
+    }
+    void setPret(int x)
+    {
+        Pret=x;
+    }
+    void operator =(Apartament& X)
+    {
+        Etaj=X.getEtaj();
+        setDiscount(X.getDiscount());
+        setProprietar(X.getProprietar());
+        setSuprafata(X.getSuprafata());
+        setPret(X.getPret());
+    }
+    friend void operator +=(Gestiune&,Apartament&);
+    friend istream& operator >>(istream& in,Apartament& a)
+    {
+        cout<<"APARTAMENT\n";
+        cout<<"Proprietar: ";
+        string s;
+        in>>s;
+        a.setProprietar(s);
+        cout<<"Suprafata: ";
+        int x;
+        in>>x;
+        a.setSuprafata(x);
+        cout<<"Etajul: ";
+        in>>a.Etaj;
+        cout<<"Pret: ";
+        in>>a.Pret;
+        return in;
+    }
+    friend ostream& operator<<(ostream& out,Apartament& a)
+    {
+        out<<"Apartament detinut de "<<a.getProprietar()<<endl;
+        out<<"Apartamentul are o suprafata de "<<a.getSuprafata()<<" metrii patrati\n";
+        out<<"Apartamentul se afla la etajul "<<a.Etaj<<endl;
+        out<<"Apartamentul are pretul de "<<a.Pret<<" lei";
+    }
+};
+
+class Casa: public Locuinta
+{
+    int Curte;
+    int Etaje;
+    int Pret;
+    int PretCurte;
+
+public:
+
+    Casa()
+    {
+        Pret=0;
+        Curte=0;
+        Etaje=0;
+        PretCurte=0;
+    }
+    Casa(Casa& c)
+    {
+        Pret=c.getPret();
+        Etaje=c.getEtaje();
+        Curte=c.getCurte();
+        PretCurte=c.getPretCurte();
+        setProprietar(c.getProprietar());
+        setSuprafata(c.getSuprafata());
+        setDiscount(c.getDiscount());
+    }
+    Casa(string p,int s=0,int d=0,int c=0,int e=0,int pre=0,int pcur=0):Locuinta(p,s,d)
+    {
+        Pret=pre;
+        Curte=c;
+        Etaje=e;
+        PretCurte=pcur;
+    }
+    void setPretCurte(int x)
+    {
+        PretCurte=x;
+    }
+    int getPretCurte()
+    {
+        return PretCurte;
+    }
+    void setCurte(int c)
+    {
+        Curte=c;
+    }
+    int getCurte()
+    {
+        return Curte;
+    }
+    int getPret()
+    {
+        return Pret;
+    }
+    void setPret(int x)
+    {
+        Pret=x;
+    }
+    int getEtaje()
+    {
+        return Etaje;
+    }
+    void setEtaje(int r)
+    {
+        Etaje=r;
+    }
+    void operator =(Casa& X)
+    {
+        Etaje=X.getEtaje();
+        Curte=X.getCurte();
+        setDiscount(X.getDiscount());
+        setProprietar(X.getProprietar());
+        setSuprafata(X.getSuprafata());
+    }
+    friend void operator +=(Gestiune&,Casa&);
+    friend istream& operator >>(istream& in, Casa& c)
+    {
+
+        cout<<"CASA\n";
+        cout<<"Proprietar: ";
+        string s;
+        in>>s;
+        c.setProprietar(s);
+        cout<<"Suprafata casa: ";
+        int x;
+        in>>x;
+        c.setSuprafata(x);
+        cout<<"Suprafata curtii este de: ";
+        in>>c.Curte;
+        cout<<"Pret pentru un metru patrat din curte este de: ";
+        in>>c.PretCurte;
+        cout<<"Cate etaje va avea casa?";
+        in>>c.Etaje;
+        cout<<"Pretul de inchiriere va fi: ";
+        in>>c.Pret;
+        cout<<endl;
+        return in;
+    }
+    friend ostream& operator<<(ostream& out,Casa& c)
+    {
+        cout<<"Casa este detinuta de: "<<c.getProprietar()<<endl;
+        cout<<"Casa are o suprafata de "<<c.getSuprafata()<<" metrii patrati\n";
+        cout<<"Curtea are "<<c.Curte<<" metrii patrati\n";
+        cout<<"Pretul pentru un metru patrat din curte este de "<<c.PretCurte<<" lei\n";
+        cout<<"Casa are "<<c.Etaje<<" etaje\n";
+        cout<<"Pretul pentru inchiriere este de "<<c.Pret<<" lei"<<endl;
+        return out;
+    }
+};
+
+
+class Gestiune
+{
+    int n;
+    Locuinta **v;
+    double *chirie;
+    static int Case;
+    string Clienti[500];
+public:
+
+    Gestiune()
+    {
+        Case=0;
+        n=0;
+    }
+    Locuinta** getV()
+    {
+        return v;
+    }
+    static int getCase()
+    {
+        return Case;
+    }
+    double* getChirie()
+    {
+        return chirie;
+    }
+    int getN()
+    {
+        return n;
+    }
+
+    void operator= (Gestiune& g)
+    {
+        Case=g.getCase();
+        v=g.getV();
+        chirie=g.getChirie();
+        n=g.getN();
+
+    }
+
+    friend void operator +=(Gestiune&,Apartament&);
+    friend void operator +=(Gestiune&,Casa&);
+    friend ostream& operator <<(ostream&,Gestiune&);
+
+    void AfisareClientiCase()
+    {
+        cout<<"Sunt "<<Case<<" case inchiriate de catre:\n";
+        for(int i=0; i<=Case; i++)
+            cout<<Clienti[i]<<endl;
+    }
+
+};
+int Gestiune::Case=0;
+
+char ap[100],ca[100];
+
+ostream& operator <<(ostream& out,Gestiune& g)
+{
+
+    for(int i=1; i<=g.n; i++)
+    {
+        out<<"Locuinta "<<i<<":\n";
+        if(strcmp(g.v[i]->getTip(),"Casa")==0) out<<*(Casa*)g.v[i];
+        else out<<*(Apartament*)g.v[i];
+        out<<"\nChiria este in valoare de: "<<g.chirie[i]<<" lei\n";
+
+    }
+    return out;
+
+}
+void operator +=(Gestiune &x, Apartament& a)
+{
+    x.n++;
+    Gestiune y;
+    y.n=x.n;
+    y.v=new Locuinta*[y.n];
+    y.chirie=new double[y.n];
+    for(int i=1; i<y.n; i++)
+    {
+        y.v[i]=x.v[i];
+        y.chirie[i]=x.chirie[i];
+        y.Clienti[i]=x.Clienti[i];
+    }
+    y.v[y.n]=new Apartament;
+    y.v[y.n]=&a;
+
+    y.v[y.n]->setTip("Apartament");
+
+
+    y.chirie[y.n]=a.Pret*a.getSuprafata();
+    x=y;
+
+}
+void operator +=(Gestiune &x, Casa& c)
+{
+    x.n++;
+    Gestiune y;
+    y.n=x.n;
+
+    y.v=new Locuinta*[y.n];
+    y.chirie=new double[y.n];
+    y.Case++;
+    x.Case++;
+    y.Clienti[y.Case]=c.getProprietar();
+    x.Clienti[y.Case]=c.getProprietar();
+    for(int i=1; i<y.n; i++)
+    {
+        y.v[i]=x.v[i];
+        y.chirie[i]=x.chirie[i];
+        y.Clienti[i]=x.Clienti[i];
+    }
+    y.v[y.n]=new Casa;
+    y.v[y.n]=&c;
+    y.v[y.n]->setTip("Casa");
+    y.chirie[y.n]=c.Pret*c.getSuprafata()+c.Curte*c.PretCurte;
+    x=y;
+
+
+}
+
+int main()
+{
+    Gestiune G;
+    Casa x;
+    cin>>x;
+    G+=x;
+
+
+    Apartament a;
+    cin>>a;
+    G+=a;
+   
+    cout<<G;
+
+
+    return 0;
+}
+
